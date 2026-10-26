@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { searchMovies } from './api/tmdb-api';
+import { searchMovies } from './services/tmdb-api';
 import SearchForm from './components/SearchForm/SearchForm';
 import MovieList from './components/MovieList/MovieList';
 import css from './App.module.css';
