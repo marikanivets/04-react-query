@@ -1,12 +1,12 @@
 import { Movie } from '../../types/movie';
 import MovieCard from '../MovieCard/MovieCard';
-import css from './MovieList.module.css';
+import css from './MovieGrid.module.css';
 
-interface MovieListProps {
+interface MovieGridProps {
   movies: Movie[];
 }
 
-const MovieList = ({ movies }: MovieListProps) => {
+const MovieGrid = ({ movies }: MovieGridProps) => {
   return (
     <div className={css.grid}>
       {movies.map((movie) => (
@@ -16,4 +16,4 @@ const MovieList = ({ movies }: MovieListProps) => {
   );
 };
 
-export default MovieList;
+export default MovieGrid;

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { searchMovies } from './services/tmdb-api';
-import SearchForm from './components/SearchForm/SearchForm';
-import MovieList from './components/MovieList/MovieList';
+import { searchMovies } from '../../services/tmdb-api';
+import SearchBar from '../SearchBar/SearchBar';
+import MovieGrid from '../MovieGrid/MovieGrid';
+import Loader from '../Loader/Loader';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import css from './App.module.css';
 
 import ReactPaginateModule from "react-paginate";
@@ -38,27 +40,20 @@ const App = () => {
     <div className={css.container}>
       <header className={css.header}>
         <span className={css.logo}>Powered by TMDB</span>
-        <SearchForm onSubmit={handleSearchSubmit} initialValue={searchQuery} />
+        <SearchBar onSubmit={handleSearchSubmit} initialValue={searchQuery} />
       </header>
 
       <main>
-        {isLoading && <div className={css.message}>Loading movies...</div>}
+        {isLoading && <Loader />}
         
-        {isError && (
-          <div className={`${css.message} ${css.error}`}>
-            Error: {(error as Error).message}
-          </div>
-        )}
+        {isError && <ErrorMessage message={(error as Error).message} />}
 
         {!isLoading && !isError && movies.length === 0 && searchQuery && (
-          <div className={`${css.message} ${css.error}`}>
-            🚫 No movies found for your request.
-          </div>
+          <ErrorMessage message="🚫 No movies found for your request." />
         )}
 
-        {movies.length > 0 && <MovieList movies={movies} />}
+        {movies.length > 0 && <MovieGrid movies={movies} />}
 
-        {/* Пагинация отображается, только если страниц больше 1 */}
         {totalPages > 1 && (
           <div className={css.paginationContainer}>
             <ReactPaginate
