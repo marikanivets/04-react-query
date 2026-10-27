@@ -12,7 +12,7 @@ const SearchBar = ({ onSubmit }: SearchBarProps) => {
     
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const query = (formData.get('search') as string || '').trim();
+    const query = (formData.get('query') as string || '').trim();
 
     if (!query) {
       toast.error('Please enter a search term!');
@@ -26,7 +26,7 @@ const SearchBar = ({ onSubmit }: SearchBarProps) => {
     <form className={css.form} onSubmit={handleSubmit}>
       <input
         type="text"
-        name="search"
+        name="query"
         className={css.input}
         placeholder="Search movies..."
       />
