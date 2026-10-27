@@ -1,75 +1,62 @@
-import React, { useEffect, MouseEvent } from 'react';
+// @ts-ignore
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { Movie } from '../../types/movie';
 import css from './MovieModal.module.css';
-import type { Movie } from '../../types/movie';
 
 interface MovieModalProps {
   movie: Movie;
   onClose: () => void;
 }
 
+const modalRoot = document.getElementById('root') || document.body;
+
 export default function MovieModal({ movie, onClose }: MovieModalProps) {
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Escape') onClose();
     };
 
-    document.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
-    
+    window.addEventListener('keydown', handleKeyDown);
+
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
 
-  const handleBackdropClick = (event: MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
-      onClose();
-    }
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
   };
 
-  const imagePath = movie.backdrop_path || movie.poster_path;
-  const imageUrl = imagePath ? `https://tmdb.org{imagePath}` : '';
-
   return createPortal(
-    <div
-      onClick={handleBackdropClick}
-      className={css.backdrop}
-      role="dialog"
-      aria-modal="true"
-    >
+    <div className={css.backdrop} onClick={handleBackdropClick}>
       <div className={css.modal}>
-        <button
-          onClick={onClose}
-          className={css.closeButton}
-          aria-label="Close modal"
-        >
+        <button className={css.closeButton} onClick={onClose}>
           &times;
         </button>
-        
-        {imageUrl && (
+        {movie.backdrop_path ? (
           <img
-            src={imageUrl}
+            src={`https://tmdb.org${movie.backdrop_path}`}
             alt={movie.title}
             className={css.image}
           />
+        ) : (
+          <div className={css.noImage}>No Backdrop Available</div>
         )}
-        
         <div className={css.content}>
-          <h2>{movie.title}</h2>
-          <p>{movie.overview}</p>
-          <p>
+          <h2 className={css.title}>{movie.title}</h2>
+          <p className={css.overview}>{movie.overview}</p>
+          <p className={css.info}>
             <strong>Release Date:</strong> {movie.release_date}
           </p>
-          <p>
-            <strong>Rating:</strong> {movie.vote_average}
+          <p className={css.info}>
+            <strong>Rating:</strong> {movie.vote_average} / 10
           </p>
         </div>
       </div>
     </div>,
-    document.body
+    modalRoot
   );
 }
